@@ -13,6 +13,7 @@ const keycloak = new Keycloak({
 try {
   const authenticated = await keycloak.init({
     onLoad: "login-required",
+    scope: "openid group roles team",
   });
   console.log(
     `User is ${authenticated ? "authenticated" : "not authenticated"}`
@@ -20,7 +21,6 @@ try {
   if (authenticated) {
     console.log(keycloak.tokenParsed);
     console.log(keycloak.refreshTokenParsed);
-    //console.log(keycloak.userInfo);
   }
 } catch (error) {
   console.error("Failed to initialize adapter:", error);

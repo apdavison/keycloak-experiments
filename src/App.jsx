@@ -1,5 +1,5 @@
 import React from "react";
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import AuthContext from "./AuthContext.js";
 
 function formatTimestamp(timestamp) {
@@ -14,14 +14,27 @@ function displayToken(token) {
 
 function App() {
   const auth = useContext(AuthContext);
+  const [userInfo, setUserInfo] = useState(null);
 
   console.log(auth);
   const tokenInfo = auth.tokenParsed;
   const refreshTokenInfo = auth.refreshTokenParsed;
 
+  const getUserInfo = async () => {
+    const userInfo = await auth.loadUserInfo().catch((err) => {
+      auth.login();
+    });
+    console.log(userInfo);
+    setUserInfo(userInfo);
+  };
+
   return (
     <div>
       <h1>Experiments with Keycloak</h1>
+      <p>
+        <button onClick={auth.logout}>Logout</button>&nbsp;
+        <button onClick={getUserInfo}>Get additional user info</button>
+      </p>
       <table>
         <tbody>
           <tr>
@@ -52,6 +65,18 @@ function App() {
             <td>Refresh token expires</td>
             <td>{formatTimestamp(refreshTokenInfo.exp)}</td>
           </tr>
+          {userInfo ? (
+            <tr>
+              <td>Unit membership</td>
+              <td>
+                {userInfo.unit.map((item) => (
+                  <span key={item}>{item}&nbsp;</span>
+                ))}
+              </td>
+            </tr>
+          ) : (
+            ""
+          )}
         </tbody>
       </table>
     </div>
