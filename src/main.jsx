@@ -2,6 +2,7 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 import Keycloak from "keycloak-js";
 import App from "./App.jsx";
+import AuthContext from "./AuthContext.js";
 
 const keycloak = new Keycloak({
   url: "https://iam-int.ebrains.eu/auth",
@@ -27,6 +28,8 @@ try {
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
-    <App auth={keycloak} />
+    <AuthContext.Provider value={keycloak}>
+      <App />
+    </AuthContext.Provider>
   </React.StrictMode>
 );
